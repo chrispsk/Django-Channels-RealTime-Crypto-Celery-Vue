@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    
+    <title>Coins</title>
+</head>
+<body>
+    <table class="table table-hover">
+        <thead>
+        <tr><th scope="col">Image</th><th scope="col">Name</th><th scope="col">Price</th></tr>
+        </thead>
+        <tbody id="tbody">
+        
+        </tbody>
+    </table>
+
+
+        <script>
+            var socket = new WebSocket('ws://127.0.0.1:8000/ws/some_url/'); 
+            socket.onmessage = function(event){
+                var djangoData = JSON.parse(event.data)
+                console.log(djangoData) // array of objects
+                
+                try {
+                    document.getElementById("row1").remove();
+                }
+                catch(err) {
+                
+                }
+                // var joke = event.data;
+                // document.querySelector('#jokeul').innerText = joke;
+                var tr = document.createElement("tr");
+                tr.setAttribute("id", "row1");
+                document.getElementById("tbody").appendChild(tr);
+                var td1 = document.createElement("td");                // Create a <p> element
+                td1.innerHTML = djangoData[0].price;
+                tr.appendChild(td1);
+            }
+        </script>
+</body>
+</html>

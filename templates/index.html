@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://unpkg.com/vue@next"></script>
+    
+    <title>Coins</title>
+    <style>
+        .fall {
+            color:red;
+        }
+        .raise {
+            color: limegreen;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-8 mx-auto mt-5">
+                <h3 class="mb-5">Crypto currencies</h3>
+                {% verbatim %}
+                <div id="app">
+                {{ message }}
+                <table class="table table-hover">
+                <thead>
+                <tr><th scope="col">Image</th><th scope="col">Name</th><th scope="col">Price</th></tr>
+                </thead>
+                <tbody>
+                    
+                <tr v-for="coin in coins" :key="coin.id">
+                    <td class="align-middle"><img :src="coin.image" alt="" class="px-2" width="50"></td>
+                    <td class="align-middle">{{ coin.name }}</td>
+                    <td class="align-middle" :class="{'raise': coin.state === 'raise', 'fall': coin.state === 'fall'}">{{ coin.price }}</td>
+                </tr>
+                
+                </tbody>
+            </table>
+            </div>
+            {% endverbatim %}
+            </div>
+        </div>
+    </div>
+
+
+      <h3 id="jokeul"></h3>
+        <script>
+            const { createApp } = Vue;
+            const CoinsApp = {
+                data() {
+                    return {
+                        message: "Live Data",
+                        coins: null
+                    }
+                },
+                created() {
+                    const socket = new WebSocket(`ws://${window.location.host}/ws/some_url/`);
+                    let _this = this; // because socket.onmessage has its own this
+                    socket.onmessage = function(event){
+                    _this.coins = JSON.parse(event.data)
+                    // console.log(djangoData[0]['price'])
+                    // var joke = event.data;
+                    // document.querySelector('#jokeul').innerText = joke;
+            }
+                }
+            }
+            createApp(CoinsApp).mount('#app')
+            //var socket = new WebSocket('ws://127.0.0.1:8000/ws/some_url/'); 
+            // socket.onmessage = function(event){
+            //     var djangoData = JSON.parse(event.data)
+            //     console.log(djangoData[0]['price'])
+            //     var joke = event.data;
+            //     document.querySelector('#jokeul').innerText = joke;
+            // }
+        </script>
+</body>
+</html>
